@@ -22,6 +22,7 @@
     "@svgr/webpack": "^8.0.1",
     "@swc/html": "^0.0.20",
     "css-loader": "^6.8.1",
+    "firebase-tools": "^12.8.0",
     "html-minimizer-webpack-plugin": "^4.4.0",
     "html-webpack-plugin": "^5.5.3",
     "mini-css-extract-plugin": "^2.7.6",
