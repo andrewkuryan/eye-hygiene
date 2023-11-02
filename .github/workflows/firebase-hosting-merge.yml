@@ -1,0 +1,17 @@
+name: Deploy to Live Channel on Push into Main
+'on':
+  push:
+    branches:
+      - main
+jobs:
+  deploy_live:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - run: npm ci && npm run build
+      - uses: FirebaseExtended/action-hosting-deploy@v0
+        with:
+          repoToken: '${{ secrets.GITHUB_TOKEN }}'
+          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT_EYE_HYGIENE }}'
+          projectId: eye-hygiene
+          channelId: live

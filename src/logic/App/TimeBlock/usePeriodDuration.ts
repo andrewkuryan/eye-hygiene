@@ -1,18 +1,14 @@
 import { useContext } from 'preact/compat';
 
-import { State } from '@/logic/App/State';
-import { ConfigContext } from '@/logic/App/Config';
+import { TimerState } from '@/logic/App/TimerState';
+import { ConfigContext } from '@/logic/Config';
 
-function usePeriodDuration(state: State) {
+function usePeriodDuration(state: TimerState) {
   const config = useContext(ConfigContext);
 
-  switch (state) {
-    case 'Work':
-      return config.workPeriod;
-    case 'Countdown':
-      return config.countdownPeriod;
-    case 'Rest':
-      return config.restPeriod;
+  switch (state.type) {
+    case 'Running':
+      return config.periods[state.index].duration;
     case 'Stopped':
       return 0;
   }

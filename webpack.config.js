@@ -3,10 +3,12 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const CopyPlugin = require('copy-webpack-plugin');
 
 const APP_TITLE = 'Eye Hygiene';
 const SRC_DIR = 'src';
 const DIST_DIR = 'dist';
+const STATIC_DIR = 'static';
 const SCRIPT_ENTRY_POINT = 'index.tsx';
 const SCRIPT_OUTPUT = 'index.js';
 const HTML_ENTRY_POINT = 'index.html';
@@ -26,6 +28,7 @@ module.exports = (env, argv) => ({
       'react-dom': 'preact/compat',
       '@/layout': path.resolve(__dirname, 'src', 'layout'),
       '@/logic': path.resolve(__dirname, 'src', 'logic'),
+      '@/service': path.resolve(__dirname, 'src', 'service', 'index.ts'),
     },
   },
   module: {
@@ -68,6 +71,11 @@ module.exports = (env, argv) => ({
       stylesFilename: STYLES_OUTPUT,
       scriptFilename: SCRIPT_OUTPUT,
     }),
+    new CopyPlugin({
+      patterns: [
+        { from: path.resolve(__dirname, STATIC_DIR), to: path.resolve(__dirname, DIST_DIR) },
+      ],
+    }),
   ],
   optimization: {
     minimize: argv.mode === 'production',
@@ -80,7 +88,7 @@ module.exports = (env, argv) => ({
     ],
   },
   devServer: {
-    static: [path.resolve(__dirname, DIST_DIR)],
+    static: [path.resolve(__dirname, DIST_DIR), path.resolve(__dirname, STATIC_DIR)],
     hot: true,
   },
 });
