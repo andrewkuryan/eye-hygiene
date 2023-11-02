@@ -13,8 +13,6 @@ function formatTime(value: number) {
 }
 
 const Timer: FunctionComponent<TimerProps> = ({ restTime }) => {
-  console.log('Timer');
-
   const formattedTime = formatTime(restTime);
 
   return (
