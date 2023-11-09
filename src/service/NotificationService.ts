@@ -1,3 +1,5 @@
+import { StaticObject } from './StaticService';
+
 class NotificationService {
   requestPermission = async () => {
     if (!window.Notification) {
@@ -7,8 +9,11 @@ class NotificationService {
     }
   };
 
-  showNotification = (text: string): Notification => {
-    return new Notification(text);
+  showNotification = (title: string, icon: StaticObject): Notification => {
+    return new Notification(title, {
+      icon: icon.url,
+      silent: true,
+    });
   };
 }
 

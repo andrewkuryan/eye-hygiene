@@ -1,9 +1,11 @@
 const path = require('path');
+const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const CopyPlugin = require('copy-webpack-plugin');
+const { DefinePlugin } = require('webpack');
 
 const APP_TITLE = 'Eye Hygiene';
 const SRC_DIR = 'src';
@@ -11,14 +13,40 @@ const DIST_DIR = 'dist';
 const STATIC_DIR = 'static';
 const SCRIPT_ENTRY_POINT = 'index.tsx';
 const SCRIPT_OUTPUT = 'index.js';
+const WORKERS_DIR = 'workers';
 const HTML_ENTRY_POINT = 'index.html';
 const HTML_OUTPUT = 'index.html';
 const STYLES_OUTPUT = 'index.css';
 
+const workerEntries = fs
+  .readdirSync(path.resolve(__dirname, SRC_DIR, WORKERS_DIR), { withFileTypes: true })
+  .reduce(
+    (acc, v) => ({
+      ...acc,
+      ...(v.isFile()
+        ? {
+            [v.name]: {
+              import: path.resolve(__dirname, SRC_DIR, WORKERS_DIR, v.name),
+              filename: path.join(
+                WORKERS_DIR,
+                path.format({ name: path.parse(v.name).name, ext: '.js' }),
+              ),
+            },
+          }
+        : {}),
+    }),
+    {},
+  );
+
 module.exports = (env, argv) => ({
-  entry: path.resolve(__dirname, SRC_DIR, SCRIPT_ENTRY_POINT),
+  entry: {
+    main: {
+      import: path.resolve(__dirname, SRC_DIR, SCRIPT_ENTRY_POINT),
+      filename: SCRIPT_OUTPUT,
+    },
+    ...workerEntries,
+  },
   output: {
-    filename: SCRIPT_OUTPUT,
     path: path.resolve(__dirname, DIST_DIR),
   },
   resolve: {
@@ -29,6 +57,7 @@ module.exports = (env, argv) => ({
       '@/layout': path.resolve(__dirname, 'src', 'layout'),
       '@/logic': path.resolve(__dirname, 'src', 'logic'),
       '@/service': path.resolve(__dirname, 'src', 'service', 'index.ts'),
+      '@/workers': path.resolve(__dirname, 'src', 'workers', 'ports'),
     },
   },
   module: {
@@ -67,14 +96,18 @@ module.exports = (env, argv) => ({
       inject: false,
       filename: HTML_OUTPUT,
       template: path.resolve(__dirname, SRC_DIR, HTML_ENTRY_POINT),
-      title: APP_TITLE,
-      stylesFilename: STYLES_OUTPUT,
-      scriptFilename: SCRIPT_OUTPUT,
+      APP_TITLE,
+      STYLES_OUTPUT,
+      SCRIPT_OUTPUT,
     }),
     new CopyPlugin({
       patterns: [
         { from: path.resolve(__dirname, STATIC_DIR), to: path.resolve(__dirname, DIST_DIR) },
       ],
+    }),
+    new DefinePlugin({
+      APP_TITLE: JSON.stringify(APP_TITLE),
+      WORKERS_DIR: JSON.stringify(WORKERS_DIR),
     }),
   ],
   optimization: {

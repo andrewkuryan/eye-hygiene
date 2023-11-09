@@ -35,7 +35,10 @@ const useTimerState = () => {
       })
       .then(soundObject =>
         notification
-          .showNotification(config.periods[periodIndex].title)
+          .showNotification(
+            config.periods[periodIndex].title,
+            staticService.resolve('icons', 'icon.svg'),
+          )
           .addEventListener('show', () => sound.play(soundObject)),
       );
   };
