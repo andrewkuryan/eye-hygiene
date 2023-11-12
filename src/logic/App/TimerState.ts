@@ -12,15 +12,18 @@ const useTimerState = () => {
   const [sounds, setSounds] = useState<Array<SoundObject | null>>(config.periods.map(() => null));
 
   const onStartPeriod = (periodIndex: number) => {
-    let requestPromise;
-    if (state.type === 'Stopped') {
-      requestPromise = notification.requestPermission();
-    } else {
-      requestPromise = Promise.resolve();
-    }
-
     setState({ type: 'Running', index: periodIndex });
-    requestPromise
+
+    sound
+      .initContext()
+      .then(() => notification.requestPermission())
+      .then(hasPermission => {
+        if (hasPermission) {
+          return Promise.resolve();
+        } else {
+          throw new Error('No notifications permission');
+        }
+      })
       .then(async () => {
         const existingSound = sounds[periodIndex];
         if (existingSound !== null) {
@@ -39,8 +42,9 @@ const useTimerState = () => {
             config.periods[periodIndex].title,
             staticService.resolve('icons', 'icon.svg'),
           )
-          .addEventListener('show', () => sound.play(soundObject)),
-      );
+          .then(() => sound.play(soundObject)),
+      )
+      .catch(err => console.log(err));
   };
 
   const onStop = () => setState({ type: 'Stopped' });

@@ -4,15 +4,16 @@ Eye rest break notification service
 
 ## System tray controls tested compatability
 
-|                      | Chrome (117.0.5938.149) | Firefox (119.0.1) |  Safari (17.0)   | Edge (119.0.2151.58) | Opera (104.0.4944.54) |
-|:---------------------|:-----------------------:|:-----------------:|:----------------:|:--------------------:|:---------------------:|
-| Mac OS (14.0, Intel) |            ✅            |         ❌         | ☑ <sup>[1]</sup> |          ✅           |           ✅           |
-| Windows              |                         |                   |        ∅         |                      |                       |
-| KDE                  |                         |                   |        ∅         |                      |                       |
-| GNOME                |                         |                   |        ∅         |                      |                       |
-| Xfce                 |                         |                   |        ∅         |                      |                       |
-| Cinnamon             |                         |                   |        ∅         |                      |                       |
-| Android (6.0)        |            ❌            |                   |        ∅         |                      |                       |
-| iOS                  |                         |                   |                  |                      |                       |
+|             |    Chrome 106    | Chrome 117 |   Firefox 119    | Safari 17.0 | Edge 119 | Opera 104 |
+|:------------|:----------------:|:----------:|:----------------:|:-----------:|:--------:|:---------:|
+| Mac OS 14.0 |                  |     ✅      | ☑ <sup>[1]</sup> |      ✅      |    ✅     |     ✅     |
+| Windows     |                  |            |                  |      ∅      |          |           |
+| KDE         |                  |            |                  |      ∅      |          |           |
+| GNOME       |                  |            |                  |      ∅      |          |           |
+| Xfce        |                  |            |                  |      ∅      |          |           |
+| Cinnamon    |                  |            |                  |      ∅      |          |           |
+| Android 6.0 | ☑ <sup>[2]</sup> |     ∅      |                  |      ∅      |          |           |
+| iOS         |                  |            |                  |             |          |           |
 
-[1] The time scale jumps to 0 at the beginning of every second
+[1] Duration, current time, and progress bar seem to not be displayed in Firefox. [Issue](https://bugzilla.mozilla.org/show_bug.cgi?id=1864301)
+[2] Progress bar seem to be unsupported in this Android version

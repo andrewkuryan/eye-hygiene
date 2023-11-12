@@ -21,7 +21,7 @@ function useAudioProps(state: TimerState) {
   return {
     ref,
     loop: true,
-    src: staticService.resolve('sounds', 'silence.mp3').url,
+    src: staticService.resolve('sounds', 'placeholder.mp3').url,
   };
 }
 

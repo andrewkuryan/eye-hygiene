@@ -1,8 +1,11 @@
 import { FunctionComponent } from 'preact';
-import { useContext } from 'preact/compat';
+import { useContext, useEffect } from 'preact/compat';
 
+import { ServiceContext } from '@/service';
+import { WORKER_NAME } from '@/workers/ServiceWorker';
 import useTimerState, { TimerState } from '@/logic/App/TimerState';
 import { ConfigContext } from '@/logic/Config';
+import Const from '@/logic/Const';
 import TimeBlock from './TimeBlock';
 
 import './app.styl';
@@ -19,7 +22,13 @@ function formatState(state: TimerState) {
 }
 
 const App: FunctionComponent = () => {
+  const { staticService } = useContext(ServiceContext);
+
   const { state: timerState, onStartPeriod, onStop } = useTimerState();
+
+  useEffect(() => {
+    navigator.serviceWorker.register(staticService.resolve(Const.WORKERS_DIR, WORKER_NAME).url);
+  }, []);
 
   return (
     <div class="content">
