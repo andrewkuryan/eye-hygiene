@@ -8,8 +8,7 @@ export function postInMessage(worker: Worker, message: InMessageType) {
 
 export type OutMessageType =
   | { type: 'NEXT_SECOND'; seconds: number }
-  | { type: 'NEXT_PERIOD'; periodIndex: number }
-  | { type: 'STOP' };
+  | { type: 'NEXT_PERIOD'; periodIndex: number };
 
 export function postOutMessage(message: OutMessageType) {
   return postMessage(message);

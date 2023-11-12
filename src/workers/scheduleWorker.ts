@@ -27,7 +27,6 @@ function handleStart(periodDurations: Array<number>) {
 function handleStop() {
   clearTimeout(timeoutId);
   timeoutId = undefined;
-  postOutMessage({ type: 'STOP' });
 }
 
 onmessage = (e: MessageEvent<InMessageType>) => {

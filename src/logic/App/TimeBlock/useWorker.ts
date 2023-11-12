@@ -29,10 +29,6 @@ function useWorker(state: TimerState, onStartPeriod: (periodIndex: number) => vo
           onStartPeriod(e.data.periodIndex);
 
           break;
-        case 'STOP':
-          setSeconds(0);
-
-          break;
       }
     };
   }, [onStartPeriod]);
@@ -40,6 +36,7 @@ function useWorker(state: TimerState, onStartPeriod: (periodIndex: number) => vo
   useEffect(() => {
     if (state.type === 'Stopped') {
       postInMessage(worker, { type: 'STOP' });
+      setSeconds(0);
     } else {
       postInMessage(worker, {
         type: 'START',
