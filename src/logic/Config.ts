@@ -15,17 +15,17 @@ export const defaultConfig: Config = {
   notStartedTitle: 'Not started',
   periods: [
     {
-      duration: 10,
+      duration: 15 * 60,
       title: 'Time to work',
       sound: 'complete.mp3',
     },
     {
-      duration: 5,
+      duration: 10,
       title: 'Preparation for rest',
       sound: 'gentle-gong.mp3',
     },
     {
-      duration: 5,
+      duration: 20,
       title: 'Rest time',
       sound: 'pending.mp3',
     },
