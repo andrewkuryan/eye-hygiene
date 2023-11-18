@@ -4,15 +4,15 @@ Eye rest break notification service
 
 ## System tray controls tested compatability
 
-|             | Chrome 106                                      | Chrome 117                 | Firefox 119                                     | Safari 17.0                | Edge 119                   | Opera 104                  |
-|-------------|-------------------------------------------------|----------------------------|-------------------------------------------------|----------------------------|----------------------------|----------------------------|
+|             |                   Chrome 106                    |         Chrome 117         |                   Firefox 119                   |        Safari 17.0         |          Edge 119          |         Opera 104          |
+|-------------|:-----------------------------------------------:|:--------------------------:|:-----------------------------------------------:|:--------------------------:|:--------------------------:|:--------------------------:|
 | Mac OS 14.0 |                                                 | ![Full support][full-icon] | ![Partial support][partial-icon] <sup>[1]</sup> | ![Full support][full-icon] | ![Full support][full-icon] | ![Full support][full-icon] |
-| Windows     |                                                 |                            |                                                 | ∅                          |                            |                            |
-| KDE         |                                                 |                            |                                                 | ∅                          |                            |                            |
-| GNOME       |                                                 |                            |                                                 | ∅                          |                            |                            |
-| Xfce        |                                                 |                            |                                                 | ∅                          |                            |                            |
-| Cinnamon    |                                                 |                            |                                                 | ∅                          |                            |                            |
-| Android 6.0 | ![Partial support][partial-icon] <sup>[1]</sup> | ∅                          |                                                 | ∅                          |                            |                            |
+| Windows     |                                                 |                            |                                                 |             ∅              |                            |                            |
+| KDE         |                                                 |                            |                                                 |             ∅              |                            |                            |
+| GNOME       |                                                 |                            |                                                 |             ∅              |                            |                            |
+| Xfce        |                                                 |                            |                                                 |             ∅              |                            |                            |
+| Cinnamon    |                                                 |                            |                                                 |             ∅              |                            |                            |
+| Android 6.0 | ![Partial support][partial-icon] <sup>[1]</sup> |             ∅              |                                                 |             ∅              |                            |                            |
 | iOS         |                                                 |                            |                                                 |                            |                            |                            |
 
 [1] Duration, current time, and progress bar seem to not be displayed in
