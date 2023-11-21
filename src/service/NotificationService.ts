@@ -1,14 +1,28 @@
+import { StaticObject } from './StaticService';
+
 class NotificationService {
+  private hasPermission: boolean | null = null;
+
   requestPermission = async () => {
-    if (!window.Notification) {
-      return false;
-    } else {
-      return Notification.requestPermission().then(result => result === 'granted');
+    if (this.hasPermission === null) {
+      if ('Notification' in window) {
+        const permission = await Notification.requestPermission();
+        this.hasPermission = permission === 'granted';
+      } else {
+        this.hasPermission = false;
+      }
     }
+    return this.hasPermission;
   };
 
-  showNotification = (text: string): Notification => {
-    return new Notification(text);
+  showNotification = async (title: string, icon: StaticObject) => {
+    return navigator.serviceWorker.getRegistrations().then(
+      registrations =>
+        registrations?.[0]?.showNotification(title, {
+          icon: icon.url,
+          silent: true,
+        }),
+    );
   };
 }
 

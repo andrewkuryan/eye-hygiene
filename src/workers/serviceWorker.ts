@@ -1,0 +1,3 @@
+/*
+  The only purpose of this file is to enable Notifications on Android
+ */

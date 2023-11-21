@@ -10,7 +10,8 @@
     "paths": {
       "@/layout/*": ["./src/layout/*"],
       "@/logic/*": ["./src/logic/*"],
-      "@/service": ["./src/service/index.ts"]
+      "@/service": ["./src/service/index.ts"],
+      "@/workers/*": ["./src/workers/ports/*"]
     }
   },
   "exclude": ["node_modules"],
