@@ -31,10 +31,12 @@ const App: FunctionComponent = () => {
   }, []);
 
   return (
-    <div class="content">
-      <h3 class="state-info">{formatState(timerState)}</h3>
+    <>
+      <div class="state-info-wrapper">
+        <h3 class="state-info">{formatState(timerState)}</h3>
+      </div>
       <TimeBlock timerState={timerState} onStartPeriod={onStartPeriod} onStop={onStop} />
-    </div>
+    </>
   );
 };
 

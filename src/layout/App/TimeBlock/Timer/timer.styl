@@ -1,3 +1,5 @@
+@require "screens"
+
 .timer-root
   display grid
   grid-template-columns 1ch 1ch fit-content(100%) 1ch 1ch
@@ -5,3 +7,15 @@
   margin 0
   font-size 90px
   color var(--text-color)
+
+  +desktop-narrow()
+    font-size 80px
+
+  +tablet()
+    font-size 64px
+
+  +mobile()
+    font-size 48px
+
+  +mobile-narrow()
+    font-size 36px

@@ -1,27 +1,57 @@
+@require "screens"
+
 #app
   margin 0
   height 100%
-  display flex
-  flex-direction column
-  justify-content center
+  display grid
+  grid-template-columns 1fr
+  grid-template-rows 55vh 45vh
+  justify-items center
   align-items center
-  background-color var(--background-color)
 
-  .content
+  .state-info-wrapper
     display flex
-    flex-direction column
-    width 100%
-    max-width 768px
-    height 100%
-
-  .state-info
-    height 50%
-    box-sizing border-box
-    display flex
-    flex-direction column
     justify-content center
-    margin 0
-    font-size 128px
-    line-height 128px
-    color var(--text-color)
-    text-align center
+    align-items center
+    height 100%
+    max-height calc(55vh - 100px)
+    overflow scroll
+
+    .state-info
+      margin 0 20px
+      padding 0 20px
+      box-sizing border-box
+      font-size 128px
+      line-height 140px
+      color var(--text-color)
+      text-align center
+
+  @media (max-height 700px)
+    grid-template-rows 1fr fit-content(100%)
+
+    .state-info-wrapper
+      max-height calc(100% - 60px)
+
+  +desktop-narrow()
+    .state-info-wrapper
+      .state-info
+        font-size 110px
+        line-height 120px
+
+  +tablet()
+    .state-info-wrapper
+      .state-info
+        font-size 90px
+        line-height 96px
+
+  +mobile()
+    .state-info-wrapper
+      .state-info
+        font-size 76px
+        line-height 80px
+
+  +mobile-narrow()
+    .state-info-wrapper
+      .state-info
+        font-size 64px
+        line-height 68px

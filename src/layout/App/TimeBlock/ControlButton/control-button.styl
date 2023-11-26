@@ -1,4 +1,5 @@
 @require "math"
+@require "screens"
 
 transparency(color, alpha)
   color-mix(unquote('in srgb'), color, rgb(255, 255, 255) (1 - alpha) * 100%)
@@ -6,7 +7,7 @@ transparency(color, alpha)
 darken(color, rate)
   color-mix(unquote('in srgb'), color, rgb(0, 0, 0) rate * 100%)
 
-arc-points(r, x1, y1, x2, y2)
+arc-points(r, x1, y1, x2, y2, mx, my)
   points = ()
   ab = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
   angle = acos(unit(abs(x2 - x1) / ab, ''))
@@ -26,37 +27,38 @@ arc-points(r, x1, y1, x2, y2)
     dx = ar * cos(xar)
     dy = ar * sin(xar)
 
-    push(points, join(' ', x1 + sign-dx * dx, y1 + sign-dy * dy))
+    push(points, join(' ', round(x1 + sign-dx * dx + mx, 2), round(y1 + sign-dy * dy + my, 2)))
   return unquote(join(',', points))
 
 generate-play-polygon(r, size, margin)
-  mx-left = margin / 5 * 9
-  mx-right = margin / 5
-  my = margin / 2
+  inner-size = size - margin
+  mx = margin + inner-size * 0.05
+  my = margin
 
   angle = atan(2)
   corner-dx = round(r + r * cos(angle))
   corner-dy = r - r * sin(angle)
-  vertex-dx = round(r * cos(angle)) - mx-right
+  vertex-dx = round(r * cos(angle))
   vertex-dy = r * sin(angle)
   vertex-h = round(r * (1 - cos(angle)))
 
   polygon(
-    arc-points(r, mx-left, r + my, corner-dx + mx-left, corner-dy + my),
-    arc-points(r, size - vertex-dx, size / 2 - vertex-dy, size - vertex-dx + vertex-h, size / 2),
-    arc-points(r, size - vertex-dx + vertex-h, size / 2, size - vertex-dx, size / 2 + vertex-dy),
-    arc-points(r, corner-dx + mx-left, size - corner-dy - my, mx-left, size - r - my)
+    arc-points(r, 0, r, corner-dx, corner-dy, mx, my),
+    arc-points(r, inner-size - vertex-dx, inner-size / 2 - vertex-dy, inner-size - vertex-dx + vertex-h, inner-size / 2, mx, my),
+    arc-points(r, inner-size - vertex-dx + vertex-h, inner-size / 2, inner-size - vertex-dx, inner-size / 2 + vertex-dy, mx, my),
+    arc-points(r, corner-dx, inner-size - corner-dy, 0, inner-size - r, mx, my)
   )
 
 generate-stop-polygon(r, size, margin)
+  inner-size = size - margin
   mx = margin
-  my = margin / 2
+  my = margin
 
   polygon(
-    arc-points(r, mx, r + my, r + mx, my),
-    arc-points(r, size - r, my, size, r + my),
-    arc-points(r, size, size - r - my, size - r, size - my),
-    arc-points(r, r + mx, size - my, mx, size - r - my)
+    arc-points(r, 0, r, r, 0, mx, my),
+    arc-points(r, inner-size - r, 0, inner-size, r, mx, my),
+    arc-points(r, inner-size, inner-size - r, inner-size - r, inner-size, mx, my),
+    arc-points(r, r, inner-size, 0, inner-size - r, mx, my)
   )
 
 .control-button
@@ -69,15 +71,17 @@ generate-stop-polygon(r, size, margin)
   background-color var(--primary-color)
   border none
   cursor pointer
-  transition box-shadow 0.4s ease-in-out, background-color 0.4s ease-in-out
-  box-shadow 0 0 5px transparency(var(--primary-color), 0.7)
+  transition all 0.4s ease-in-out
 
   &:hover
-    box-shadow 0 0 8px transparency(darken(var(--primary-color), 0.1), 0.7)
-    background-color darken(var(--primary-color), 0.1)
+    box-shadow 0 0 8px rgba(255, 255, 255, 0.4)
 
-  --play-polygon generate-play-polygon(10px, 90px, 10px)
-  --stop-polygon generate-stop-polygon(10px, 90px, 10px)
+    @supports (color: color-mix(unquote('in srgb'), white, white))
+      box-shadow 0 0 5px transparency(darken(var(--primary-color), 0.15), 0.9)
+      background-color darken(var(--primary-color), 0.15)
+
+  --play-polygon generate-play-polygon(10px, 90px, 11px)
+  --stop-polygon generate-stop-polygon(10px, 90px, 11px)
 
   @keyframes stop-to-play
     0%
@@ -93,7 +97,7 @@ generate-stop-polygon(r, size, margin)
 
   .icon
     width 100px
-    height 90px
+    height 100px
     clip-path var(--play-polygon)
     background-color var(--background-color)
 
@@ -102,3 +106,47 @@ generate-stop-polygon(r, size, margin)
 
     &.play
       animation 0.5s ease-in-out 0s 1 normal forwards running stop-to-play
+
+  +desktop-narrow()
+    width 140px
+    height 140px
+
+    --play-polygon generate-play-polygon(9px, 85px, 11px)
+    --stop-polygon generate-stop-polygon(9px, 85px, 11px)
+
+    .icon
+      width 95px
+      height 95px
+
+  +tablet()
+    width 110px
+    height 110px
+
+    --play-polygon generate-play-polygon(7px, 70px, 10.5px)
+    --stop-polygon generate-stop-polygon(7px, 70px, 10.5px)
+
+    .icon
+      width 80px
+      height 80px
+
+  +mobile()
+    width 80px
+    height 80px
+
+    --play-polygon generate-play-polygon(5px, 52px, 8.5px)
+    --stop-polygon generate-stop-polygon(5px, 52px, 8.5px)
+
+    .icon
+      width 60px
+      height 60px
+
+  +mobile-narrow()
+    width 64px
+    height 64px
+
+    --play-polygon generate-play-polygon(4px, 40px, 5.5px)
+    --stop-polygon generate-stop-polygon(4px, 40px, 5.5px)
+
+    .icon
+      width 45px
+      height 45px
