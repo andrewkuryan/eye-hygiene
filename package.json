@@ -1,6 +1,6 @@
 {
   "name": "eye-hygiene",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "Eye rest break notification service",
   "main": "src/index.tsx",
   "scripts": {
@@ -38,6 +38,7 @@
     "webpack-dev-server": "^4.15.1"
   },
   "dependencies": {
+    "nanoid": "^5.0.4",
     "preact": "^10.16.0"
   }
 }

@@ -3,23 +3,12 @@ import { useContext, useEffect } from 'preact/compat';
 
 import { ServiceContext } from '@/service';
 import { WORKER_NAME } from '@/workers/ServiceWorker';
-import useTimerState, { TimerState } from '@/logic/App/TimerState';
-import { ConfigContext } from '@/logic/Config';
+import useTimerState from '@/logic/App/TimerState';
 import Const from '@/logic/Const';
 import TimeBlock from './TimeBlock';
+import StatesCarousel from './StateInfo/StatesCarousel';
 
 import './app.styl';
-
-function formatState(state: TimerState) {
-  const config = useContext(ConfigContext);
-
-  switch (state.type) {
-    case 'Stopped':
-      return config.notStartedTitle;
-    case 'Running':
-      return config.periods[state.index].title;
-  }
-}
 
 const App: FunctionComponent = () => {
   const { staticService } = useContext(ServiceContext);
@@ -32,9 +21,7 @@ const App: FunctionComponent = () => {
 
   return (
     <>
-      <div class="state-info-wrapper">
-        <h3 class="state-info">{formatState(timerState)}</h3>
-      </div>
+      <StatesCarousel timerState={timerState} />
       <TimeBlock timerState={timerState} onStartPeriod={onStartPeriod} onStop={onStop} />
     </>
   );

@@ -1,0 +1,69 @@
+@require "screens"
+
+.state-title-root
+  position absolute
+  top 0
+  left 0
+  margin 0
+  box-sizing border-box
+  font-size 128px
+  line-height 128px
+  color var(--text-color)
+  transform-origin center
+  overflow-y hidden
+  overflow-x hidden
+
+  span
+    position absolute
+    top 0
+    left 0
+    overflow: hidden;
+    text-overflow ellipsis
+    max-width 100%
+
+    &:after
+      content ''
+      position absolute
+      right 0
+      width 100%
+      height 100%
+      background linear-gradient(to left, var(--background-color) 10%, rgba(0, 0, 0, 0) 90%);
+      opacity 0
+      transition opacity 1s ease-in-out
+
+    &.last
+      &:after
+        opacity 1
+
+  &.active
+    opacity 1
+    overflow-y scroll
+    overflow-x hidden
+
+  &.previous
+    opacity 0.15
+
+  &.next
+    opacity 0.5
+
+  &.hidden-left
+    opacity 0
+
+  &.hidden-right
+    opacity 0
+
+  +desktop-narrow()
+    font-size 110px
+    line-height 110px
+
+  +tablet()
+    font-size 90px
+    line-height 90px
+
+  +mobile()
+    font-size 76px
+    line-height 76px
+
+  +mobile-narrow()
+    font-size 64px
+    line-height 64px
