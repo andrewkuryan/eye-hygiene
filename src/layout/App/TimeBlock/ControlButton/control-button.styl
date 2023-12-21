@@ -7,58 +7,52 @@ transparency(color, alpha)
 darken(color, rate)
   color-mix(unquote('in srgb'), color, rgb(0, 0, 0) rate * 100%)
 
-arc-points(r, x1, y1, x2, y2, mx, my)
+arc-points(r, x1, y1, x2, y2)
   points = ()
   ab = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
   angle = acos(unit(abs(x2 - x1) / ab, ''))
   sign-dx = abs(x2 - x1) / (x2 - x1)
   sign-dy = abs(y2 - y1) / (y2 - y1)
 
-  for cx in (x1..x2)
-    ac-h = (cx - x1) * (y2 - y1) / (x2 - x1)
-    ac = sqrt(pow(cx - x1, 2) + pow(ac-h, 2))
+  from = round(x1)
+  to = round(x2)
+  for cx in (from..to)
+    cx-sized = unit(cx, unit(x1))
+    ac-h = (cx-sized - x1) * (y2 - y1) / (x2 - x1)
+    ac = sqrt(pow(cx-sized - x1, 2) + pow(ac-h, 2))
     oc = sqrt(pow(r, 2) + pow(ac, 2) - ac * ab)
     cos-aoc = unit((2 * pow(r, 2) - ac * ab) / (2 * oc * r), '')
     ar = sqrt(2 * pow(r, 2) * (1 - cos-aoc))
     rc = r - oc
     cos-car = ar > 0 ? unit((pow(ac, 2) + pow(ar, 2) - pow(rc, 2)) / (2 * ac * ar), '') : 1
     car = cos-car < 1 ? acos(cos-car) : 0deg
-    xar = angle - sign-dy * sign-dx * car
+    xar = angle - unit((sign-dy * sign-dx), '') * car
     dx = ar * cos(xar)
     dy = ar * sin(xar)
 
-    push(points, join(' ', round(x1 + sign-dx * dx + mx, 2), round(y1 + sign-dy * dy + my, 2)))
+    push(points, join(' ', round(x1 + sign-dx * dx, 2), round(y1 + sign-dy * dy, 2)))
   return unquote(join(',', points))
 
-generate-play-polygon(r, size, margin)
-  inner-size = size - margin
-  mx = margin + inner-size * 0.05
-  my = margin
-
-  angle = atan(2)
-  corner-dx = round(r + r * cos(angle))
-  corner-dy = r - r * sin(angle)
-  vertex-dx = round(r * cos(angle))
-  vertex-dy = r * sin(angle)
-  vertex-h = round(r * (1 - cos(angle)))
+generate-play-polygon(r, size)
+  angle = atan(unit((size / 2) / (size - r), ''))
+  corner-dx = r + r * sin(angle)
+  corner-dy = r - r * cos(angle)
+  vertex-dx = r - r * sin(angle)
+  vertex-dy = r * cos(angle)
 
   polygon(
-    arc-points(r, 0, r, corner-dx, corner-dy, mx, my),
-    arc-points(r, inner-size - vertex-dx, inner-size / 2 - vertex-dy, inner-size - vertex-dx + vertex-h, inner-size / 2, mx, my),
-    arc-points(r, inner-size - vertex-dx + vertex-h, inner-size / 2, inner-size - vertex-dx, inner-size / 2 + vertex-dy, mx, my),
-    arc-points(r, corner-dx, inner-size - corner-dy, 0, inner-size - r, mx, my)
+    arc-points(r, 0%, r, corner-dx, corner-dy),
+    arc-points(r, size - vertex-dx, size / 2 - vertex-dy, size, size / 2),
+    arc-points(r, size, size / 2, size - vertex-dx, size / 2 + vertex-dy),
+    arc-points(r, corner-dx, size - corner-dy, 0%, size - r)
   )
 
-generate-stop-polygon(r, size, margin)
-  inner-size = size - margin
-  mx = margin
-  my = margin
-
+generate-stop-polygon(r, size)
   polygon(
-    arc-points(r, 0, r, r, 0, mx, my),
-    arc-points(r, inner-size - r, 0, inner-size, r, mx, my),
-    arc-points(r, inner-size, inner-size - r, inner-size - r, inner-size, mx, my),
-    arc-points(r, r, inner-size, 0, inner-size - r, mx, my)
+    arc-points(r, 0%, r, r, 0%),
+    arc-points(r, size - r, 0%, size, r),
+    arc-points(r, size, size - r, size - r, size),
+    arc-points(r, r, size, 0%, size - r)
   )
 
 .control-button
@@ -70,6 +64,7 @@ generate-stop-polygon(r, size, margin)
   border-radius 50%
   background-color var(--primary-color)
   border none
+  padding 0
   cursor pointer
   transition all 0.4s ease-in-out
 
@@ -80,73 +75,31 @@ generate-stop-polygon(r, size, margin)
       box-shadow 0 0 5px transparency(darken(var(--primary-color), 0.15), 0.9)
       background-color darken(var(--primary-color), 0.15)
 
-  --play-polygon generate-play-polygon(10px, 90px, 11px)
-  --stop-polygon generate-stop-polygon(10px, 90px, 11px)
-
-  @keyframes stop-to-play
-    0%
-      clip-path var(--stop-polygon)
-    100%
-      clip-path var(--play-polygon)
-
-  @keyframes play-to-stop
-    0%
-      clip-path var(--play-polygon)
-    100%
-      clip-path var(--stop-polygon)
-
   .icon
-    width 100px
-    height 100px
-    clip-path var(--play-polygon)
+    width 55%
+    height 55%
     background-color var(--background-color)
+    transition clip-path 0.5s ease-in-out, transform 0.5s ease-in-out
 
     &.stop
-      animation 0.5s ease-in-out 0s 1 normal forwards running play-to-stop
+      clip-path generate-stop-polygon(10%, 100%)
 
     &.play
-      animation 0.5s ease-in-out 0s 1 normal forwards running stop-to-play
+      transform translateX(8%)
+      clip-path generate-play-polygon(10%, 100%)
 
   +desktop-narrow()
     width 140px
     height 140px
 
-    --play-polygon generate-play-polygon(9px, 85px, 11px)
-    --stop-polygon generate-stop-polygon(9px, 85px, 11px)
-
-    .icon
-      width 95px
-      height 95px
-
   +tablet()
     width 110px
     height 110px
-
-    --play-polygon generate-play-polygon(7px, 70px, 10.5px)
-    --stop-polygon generate-stop-polygon(7px, 70px, 10.5px)
-
-    .icon
-      width 80px
-      height 80px
 
   +mobile()
     width 80px
     height 80px
 
-    --play-polygon generate-play-polygon(5px, 52px, 8.5px)
-    --stop-polygon generate-stop-polygon(5px, 52px, 8.5px)
-
-    .icon
-      width 60px
-      height 60px
-
   +mobile-narrow()
     width 64px
     height 64px
-
-    --play-polygon generate-play-polygon(4px, 40px, 5.5px)
-    --stop-polygon generate-stop-polygon(4px, 40px, 5.5px)
-
-    .icon
-      width 45px
-      height 45px

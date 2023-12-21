@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { memo, useEffect, useState } from 'preact/compat';
+import { memo } from 'preact/compat';
 
 import { TimerState } from '@/logic/App/TimerState';
 
@@ -13,20 +13,6 @@ interface ControlButtonProps {
 
 const ControlButton: FunctionComponent<ControlButtonProps> = memo(
   ({ timerState, onStartPeriod, onStop }) => {
-    const [iconState, setIconState] = useState<'play' | 'stop' | null>(null);
-
-    const handleIconStateChange = () => {
-      if (timerState.type === 'Stopped') {
-        if (iconState !== null) {
-          setIconState('play');
-        }
-      } else {
-        setIconState('stop');
-      }
-    };
-
-    useEffect(() => handleIconStateChange(), [timerState]);
-
     const handleClick = () => {
       if (timerState.type === 'Stopped') {
         onStartPeriod(0);
@@ -37,7 +23,7 @@ const ControlButton: FunctionComponent<ControlButtonProps> = memo(
 
     return (
       <button class="control-button" onClick={handleClick}>
-        <span class={`icon ${iconState ? iconState : ''}`} />
+        <span class={`icon ${timerState.type === 'Stopped' ? 'play' : 'stop'}`} />
       </button>
     );
   },

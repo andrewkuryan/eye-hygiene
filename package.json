@@ -1,6 +1,6 @@
 {
   "name": "eye-hygiene",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Eye rest break notification service",
   "main": "src/index.tsx",
   "scripts": {
