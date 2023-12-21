@@ -1,69 +1,38 @@
-@require "screens"
-
 .state-title-root
-  position absolute
-  top 0
-  left 0
-  margin 0
-  box-sizing border-box
-  font-size 128px
-  line-height 128px
-  color var(--text-color)
-  transform-origin center
-  overflow-y hidden
-  overflow-x hidden
+  display flex
+  justify-content center
+  align-items center
+  flex-wrap wrap
+  column-gap 0.25em
 
-  span
+  &:after
+    content ''
     position absolute
-    top 0
     left 0
-    overflow: hidden;
-    text-overflow ellipsis
-    max-width 100%
+    top 0
+    width 100%
+    height 100%
+    opacity 0
+    background linear-gradient(to top, var(--background-color) 15%, rgba(0, 0, 0, 0) 85%)
+    transition height 1s ease-in-out, opacity 1s ease-in-out
+
+  &.overflowed-y
+    pointer-events none
 
     &:after
-      content ''
-      position absolute
-      right 0
-      width 100%
-      height 100%
-      background linear-gradient(to left, var(--background-color) 10%, rgba(0, 0, 0, 0) 90%);
-      opacity 0
-      transition opacity 1s ease-in-out
-
-    &.last
-      &:after
-        opacity 1
+      opacity 1
+      height calc(100% + 1em)
 
   &.active
-    opacity 1
-    overflow-y scroll
-    overflow-x hidden
+    span
+      &.overflowed-x
+        min-width 100cqw
 
-  &.previous
-    opacity 0.15
+  span
+    text-align center
+    transition transform 1s ease-in-out, min-width 1s ease-in-out
+    text-overflow ellipsis
+    overflow hidden
 
-  &.next
-    opacity 0.5
-
-  &.hidden-left
-    opacity 0
-
-  &.hidden-right
-    opacity 0
-
-  +desktop-narrow()
-    font-size 110px
-    line-height 110px
-
-  +tablet()
-    font-size 90px
-    line-height 90px
-
-  +mobile()
-    font-size 76px
-    line-height 76px
-
-  +mobile-narrow()
-    font-size 64px
-    line-height 64px
+    &.overflowed-x
+      min-width 100%

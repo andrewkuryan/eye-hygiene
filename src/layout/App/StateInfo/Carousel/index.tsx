@@ -1,176 +1,77 @@
 import { FunctionComponent, RenderableProps } from 'preact';
-import { memo, useEffect, useLayoutEffect, useRef, useState } from 'preact/compat';
+import { memo } from 'preact/compat';
+
+import { ScreenDimensions } from '@/layout/hooks/useScreenDimensions';
+import Arrow from './Arrow';
 
 import './carousel.styl';
-
-interface ScreenDimensions {
-  width: number;
-  height: number;
-  isTablet: boolean;
-}
-
-export function useScreenDimensions(): ScreenDimensions {
-  const [width, setWidth] = useState(window.innerWidth);
-  const [height, setHeight] = useState(window.innerHeight);
-  const isTablet = window.innerWidth <= 768;
-
-  useEffect(() => {
-    const listener = () => {
-      setWidth(window.innerWidth);
-      setHeight(window.innerHeight);
-    };
-
-    window.addEventListener('resize', listener);
-
-    return () => window.removeEventListener('resize', listener);
-  }, []);
-
-  return { width, height, isTablet };
-}
 
 interface SlideProps {
   displayPosition: number;
   key: string;
 }
 
+type SlideAlign = 'left' | 'center' | 'right';
+
 export interface SlideSetup {
-  className: string;
-  width: number;
-  height: number;
-  left: number;
-  align: 'left' | 'center' | 'right';
-  scale: number;
-  applyTextEllipsis: boolean;
+  align: SlideAlign;
+  hidden: boolean;
+  className?: string;
 }
 
 type CarouselProps<P extends SlideProps> = {
   Slide: FunctionComponent<Omit<P, 'displayPosition' | 'key'> & SlideSetup>;
   slideParams: Array<P>;
+  className?: string;
 } & ScreenDimensions;
 
-function getSlideAlign(index: number, isTiny: boolean) {
-  switch (index) {
-    case 0:
-      return 'left';
-    case 1:
-      return isTiny ? 'center' : 'left';
-    case 2:
-      return isTiny ? 'right' : 'center';
-    case 3:
-      return 'right';
-    case 4:
-      return 'right';
-    default:
-      return 'left';
-  }
+function getSlideParam<T>(
+  slideParams: Array<T>,
+  tinySlideParams: Array<T>,
+  displayPosition: number,
+  isTiny: boolean,
+) {
+  const params = isTiny ? tinySlideParams : slideParams;
+  return displayPosition < 0
+    ? params[0]
+    : displayPosition >= params.length
+    ? params[params.length - 1]
+    : params[displayPosition];
 }
 
-function getSlideScale(index: number, isTiny: boolean) {
-  switch (index) {
-    case 0:
-      return 0;
-    case 1:
-      return isTiny ? 1 : 0.4;
-    case 2:
-      return isTiny ? 0 : 1;
-    case 3:
-      return 0.4;
-    case 4:
-      return 0;
-    default:
-      return 0;
-  }
-}
+const tinySlideAligns: Array<SlideAlign> = ['left', 'center', 'right'];
+const slideAligns: Array<SlideAlign> = ['left', 'left', 'center', 'right', 'right'];
 
-function applySlideTextEllipsis(index: number, isTiny: boolean) {
-  return (!isTiny && index !== 2) || (isTiny && index !== 1);
-}
+const getSlideAlign = (displayPosition: number, isTiny: boolean) =>
+  getSlideParam(slideAligns, tinySlideAligns, displayPosition, isTiny);
 
-function getSlideClassName(index: number, isTiny: boolean) {
-  switch (index) {
-    case 0:
-      return 'hidden-left';
-    case 1:
-      return isTiny ? 'active' : 'previous';
-    case 2:
-      return isTiny ? 'hidden-right' : 'active';
-    case 3:
-      return 'next';
-    case 4:
-      return 'hidden-right';
-    default:
-      return 'hidden-left';
-  }
-}
+const tinySlideClassNames = ['hidden-left', 'active', 'hidden-right'];
+const slideClassNames = ['hidden-left', 'previous', 'active', 'next', 'hidden-right'];
+
+const getSlideClassName = (displayPosition: number, isTiny: boolean) =>
+  getSlideParam(slideClassNames, tinySlideClassNames, displayPosition, isTiny);
 
 function Carousel<P extends SlideProps>({
   Slide,
   slideParams,
-  width,
-  height,
   isTablet,
+  className,
 }: RenderableProps<CarouselProps<P>>) {
-  const [sizes, setSizes] = useState({
-    width: 0,
-    height: 0,
-    init: false,
-    cellOffsets: isTablet ? [0, 0, 0] : [0, 0, 0, 0, 0],
-  });
-
-  const hiddenLeftPlaceholder = useRef<HTMLDivElement>(null);
-  const previousPlaceholder = useRef<HTMLDivElement>(null);
-  const activePlaceholder = useRef<HTMLDivElement>(null);
-  const nextPlaceholder = useRef<HTMLDivElement>(null);
-  const hiddenRightPlaceholder = useRef<HTMLDivElement>(null);
-
-  useLayoutEffect(() => {
-    if (
-      hiddenLeftPlaceholder.current &&
-      activePlaceholder.current &&
-      hiddenRightPlaceholder.current
-    ) {
-      const hiddenLeftLeft = hiddenLeftPlaceholder.current.getBoundingClientRect().left;
-      const previousLeft = previousPlaceholder.current?.getBoundingClientRect()?.left;
-      const { left: activeLeft, width, height } = activePlaceholder.current.getBoundingClientRect();
-      const nextLeft = nextPlaceholder.current?.getBoundingClientRect()?.left;
-      const hiddenRightLeft = hiddenRightPlaceholder.current.getBoundingClientRect().left;
-
-      setSizes({
-        width,
-        height,
-        init: true,
-        cellOffsets: [
-          hiddenLeftLeft,
-          ...(previousLeft ? [previousLeft] : []),
-          activeLeft,
-          ...(nextLeft ? [nextLeft] : []),
-          hiddenRightLeft,
-        ],
-      });
-    }
-  }, [width, height]);
-
   return (
-    <div class={`carousel-root ${isTablet ? 'tiny' : ''}`}>
-      <div ref={hiddenLeftPlaceholder} class="placeholder" />
-      {!isTablet && <div ref={previousPlaceholder} class="placeholder" />}
-      <div ref={activePlaceholder} class="placeholder" />
-      {!isTablet && <div ref={nextPlaceholder} class="placeholder" />}
-      <div ref={hiddenRightPlaceholder} class="placeholder" />
-      {sizes.init &&
-        slideParams.map(({ displayPosition, key, ...props }) => (
+    <div class={`carousel-root ${className ? className : ''}`}>
+      <Arrow className="arrow left" />
+      <div class="carousel-content">
+        {slideParams.map(({ displayPosition, key, ...props }) => (
           <Slide
-            {...props}
             key={key}
-            width={sizes.width}
-            height={sizes.height}
-            left={sizes.cellOffsets[displayPosition]}
+            className={`slide ${getSlideClassName(displayPosition, isTablet)}`}
             align={getSlideAlign(displayPosition, isTablet)}
-            scale={getSlideScale(displayPosition, isTablet)}
-            applyTextEllipsis={applySlideTextEllipsis(displayPosition, isTablet)}
-            className={getSlideClassName(displayPosition, isTablet)}
+            hidden={displayPosition === 0 || displayPosition === (isTablet ? 2 : 4)}
+            {...props}
           />
         ))}
+      </div>
+      <Arrow className="arrow right" />
     </div>
   );
 }

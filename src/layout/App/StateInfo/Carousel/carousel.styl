@@ -1,24 +1,107 @@
+@require "shortenings"
+@require "screens"
+
 .carousel-root
-  width 100%
-  position relative
-  box-sizing border-box
-  padding 0 20px
   display grid
-  grid-template-rows calc(55vh - 100px)
-  grid-template-columns 0 2fr 5fr 2fr 0
-  grid-column-gap 20px
-  align-items center
-  justify-items center
-  overflow-x hidden
-  overflow-y visible
+  grid-template-rows 1fr
+  grid-template-columns fit-content(100%) 1fr fit-content(100%)
+  align-items stretch
+  justify-items stretch
+  width 100%
+  height 100%
+  padding 40px 40px 0 40px
+  box-sizing border-box
 
-  &.tiny
-    grid-template-columns 0 1fr 0
+  .carousel-content
+    --column-gap 20px
 
-  .placeholder
-    width 100%
-    height 100%
-
-  @media (max-height 700px)
-    height calc(100% - 40px)
+    grid-row 1
+    box-sizing border-box
+    padding 0 var(--column-gap)
+    display grid
     grid-template-rows 1fr
+    grid-template-columns 1fr
+    align-items center
+    justify-items center
+    overflow hidden
+    container-type size
+
+    .slide
+      grid-column 1
+      grid-row 1
+      transform-origin center
+      transition opacity 1s ease-in-out, transform 1s ease-in-out, padding 1s ease-in-out
+      width calc((100% - 2 * var(--column-gap)) * 5 / 9)
+      overflow-y auto
+      overflow-x hidden
+      max-height 100%
+
+      &.active
+        opacity 1
+        transform translateX(0) scale(1.0)
+        padding 0 calc((200% + 5 * var(--column-gap)) * 1 / 9)
+
+      &.previous
+        opacity 0.15
+        transform translateX(calc(-50% - var(--column-gap) - 50% * 0.4)) scale(0.4)
+        no-scrollbars()
+
+      &.next
+        opacity 0.5
+        transform translateX(calc(50% + var(--column-gap) + 50% * 0.4)) scale(0.4)
+        no-scrollbars()
+
+      &.hidden-left
+        opacity 0
+        transform translateX(calc(-50% - var(--column-gap) - 100% * 0.4)) scale(0)
+        no-scrollbars()
+
+      &.hidden-right
+        opacity 0
+        transform translateX(calc(50% + var(--column-gap) + 100% * 0.4)) scale(0)
+        no-scrollbars()
+
+  .arrow
+    grid-row 1
+    align-self center
+    overflow visible
+    width 0.4em
+    height 1.2em
+    stroke var(--secondary-color)
+
+    &.left
+      grid-column 1
+      opacity 0.5
+
+    &.right
+      grid-column 3
+      transform scale(-1)
+
+  +desktop-narrow()
+    padding 20px 20px 0 20px
+
+    .carousel-content
+      --column-gap 20px
+
+  +tablet-portrait()
+    .carousel-content
+      --column-gap 10px
+
+  +mobile-portrait()
+    .carousel-content
+      grid-column 1 / 4
+      padding 0
+
+      .slide
+        width calc(100% - 2 * 0.4em - 2 * var(--column-gap))
+
+        &.active
+          padding 0 calc(0.4em + var(--column-gap))
+
+    .arrow
+      height 0.75em
+      align-self flex-end
+      margin-bottom 1.5px
+
+  +mobile-narrow-portrait()
+    padding 10px 10px 0 10px

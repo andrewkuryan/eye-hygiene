@@ -6,6 +6,7 @@
   align-items center
   width 900px
   align-self flex-start
+  margin-top 50px
 
   .control-block
     position relative
@@ -27,19 +28,21 @@
       border-radius 2px
       background-color var(--secondary-color)
 
-  @media (max-height 700px)
+  +tablet-landscape()
     .control-block
       &::after
         display none
 
   +desktop-narrow()
     width 80%
+    margin-top 45px
 
     .control-block
       padding 45px 10px 49px
 
   +tablet()
     width 100%
+    margin-top 40px
 
     .control-block
       width calc(100% - 100px)
@@ -47,6 +50,7 @@
 
   +mobile()
     width 100%
+    margin-top 35px
 
     .control-block
       width calc(100% - 50px)
@@ -54,6 +58,7 @@
 
   +mobile-narrow()
     width 100%
+    margin-top 25px
 
     .control-block
       width calc(100% - 30px)

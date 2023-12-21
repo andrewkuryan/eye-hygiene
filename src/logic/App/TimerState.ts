@@ -1,9 +1,32 @@
 import { useContext, useState } from 'preact/compat';
 
-import { ConfigContext } from '@/logic/Config';
+import { Config, ConfigContext } from '@/logic/Config';
 import { ServiceContext, SoundObject } from '@/service';
 
 export type TimerState = { type: 'Stopped' } | { type: 'Running'; index: number };
+
+export function getStateTitle(state: TimerState | null, config: Config) {
+  if (!state) {
+    return null;
+  }
+
+  switch (state.type) {
+    case 'Stopped':
+      return config.notStartedTitle;
+    case 'Running':
+      return config.periods[state.index].title;
+  }
+}
+
+export function getNextRunningState(
+  currentState: TimerState | null,
+  config: Config,
+  step?: number,
+): TimerState {
+  const currentIndex = currentState?.type === 'Running' ? currentState.index : -1;
+
+  return { type: 'Running', index: (currentIndex + (step ?? 1)) % config.periods.length };
+}
 
 const useTimerState = () => {
   const config = useContext(ConfigContext);
