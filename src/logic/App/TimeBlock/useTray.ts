@@ -33,7 +33,28 @@ function useTray(
     tray.setMetadata({
       artwork: [
         {
-          src: staticService.resolve('icons', 'icon.svg').url,
+          src: staticService.resolve('icons', 'icon-96x96.png').url,
+          sizes: '96x96',
+          type: 'image/svg',
+        },
+        {
+          src: staticService.resolve('icons', 'icon-144x144.png').url,
+          sizes: '144x144',
+          type: 'image/svg',
+        },
+        {
+          src: staticService.resolve('icons', 'icon-192x192.png').url,
+          sizes: '192x192',
+          type: 'image/svg',
+        },
+        {
+          src: staticService.resolve('icons', 'icon-384x384.png').url,
+          sizes: '384x384',
+          type: 'image/svg',
+        },
+        {
+          src: staticService.resolve('icons', 'icon-512x512.png').url,
+          sizes: '512x512',
           type: 'image/svg',
         },
       ],
