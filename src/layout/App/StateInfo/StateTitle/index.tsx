@@ -1,5 +1,5 @@
 import { FunctionComponent } from 'preact';
-import { memo, Ref, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'preact/compat';
+import { memo, Ref, useEffect, useMemo, useRef, useState } from 'preact/compat';
 
 import { SlideSetup } from '@/layout/App/StateInfo/Carousel';
 
@@ -35,16 +35,13 @@ const StateTitle: FunctionComponent<StateTitleProps> = memo(
         }
         for (let row of Object.values(rows)) {
           let translate = 0;
-          let padding = parseInt(
-            getComputedStyle(rootRef.current).getPropertyValue('padding-left'),
-          );
           if (align === 'left') {
-            translate = -row[0].offsetLeft + padding;
+            translate = -row[0].offsetLeft;
           } else if (align === 'right') {
-            translate = row[0].offsetLeft - padding;
+            translate = row[0].offsetLeft;
           }
           for (let item of row) {
-            if (item.scrollWidth > rootRef.current.clientWidth - 2 * Math.abs(padding)) {
+            if (item.scrollWidth > rootRef.current.clientWidth) {
               item.style.transform = `translateX(0px)`;
               item.classList.add('overflowed-x');
             } else {
@@ -65,7 +62,7 @@ const StateTitle: FunctionComponent<StateTitleProps> = memo(
       }
     };
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       const resizeObserver = new ResizeObserver(() => {
         requestAnimationFrame(() => {
           alignText();
@@ -82,11 +79,11 @@ const StateTitle: FunctionComponent<StateTitleProps> = memo(
           resizeObserver.unobserve(rootRef.current);
         }
       };
-    });
+    }, [title, align, className, hidden]);
 
     useEffect(() => {
       return () => {
-        rootRef.current?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        rootRef.current?.parentElement?.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
       };
     }, [align]);
 

@@ -7,19 +7,19 @@ transparency(color, alpha)
 darken(color, rate)
   color-mix(unquote('in srgb'), color, rgb(0, 0, 0) rate * 100%)
 
-arc-points(r, x1, y1, x2, y2)
+arc-points(r, x1, y1, x2, y2, steps)
   points = ()
   ab = sqrt(pow(x2 - x1, 2) + pow(y2 - y1, 2))
   angle = acos(unit(abs(x2 - x1) / ab, ''))
   sign-dx = abs(x2 - x1) / (x2 - x1)
   sign-dy = abs(y2 - y1) / (y2 - y1)
 
-  from = round(x1)
-  to = round(x2)
-  for cx in (from..to)
-    cx-sized = unit(cx, unit(x1))
-    ac-h = (cx-sized - x1) * (y2 - y1) / (x2 - x1)
-    ac = sqrt(pow(cx-sized - x1, 2) + pow(ac-h, 2))
+  step-dx = (x2 - x1) / steps
+
+  for step in (0..steps)
+    cx = x1 + step * step-dx
+    ac-h = (cx - x1) * (y2 - y1) / (x2 - x1)
+    ac = sqrt(pow(cx - x1, 2) + pow(ac-h, 2))
     oc = sqrt(pow(r, 2) + pow(ac, 2) - ac * ab)
     cos-aoc = unit((2 * pow(r, 2) - ac * ab) / (2 * oc * r), '')
     ar = sqrt(2 * pow(r, 2) * (1 - cos-aoc))
@@ -34,25 +34,25 @@ arc-points(r, x1, y1, x2, y2)
   return unquote(join(',', points))
 
 generate-play-polygon(r, size)
-  angle = atan(unit((size / 2) / (size - r), ''))
+  angle = atan(1 / 2)
   corner-dx = r + r * sin(angle)
   corner-dy = r - r * cos(angle)
   vertex-dx = r - r * sin(angle)
   vertex-dy = r * cos(angle)
 
   polygon(
-    arc-points(r, 0%, r, corner-dx, corner-dy),
-    arc-points(r, size - vertex-dx, size / 2 - vertex-dy, size, size / 2),
-    arc-points(r, size, size / 2, size - vertex-dx, size / 2 + vertex-dy),
-    arc-points(r, corner-dx, size - corner-dy, 0%, size - r)
+    arc-points(r, 0%, r, corner-dx, corner-dy, 15),
+    arc-points(r, size - vertex-dx, size / 2 - vertex-dy, size, size / 2, 5),
+    arc-points(r, size, size / 2, size - vertex-dx, size / 2 + vertex-dy, 5),
+    arc-points(r, corner-dx, size - corner-dy, 0%, size - r, 15)
   )
 
 generate-stop-polygon(r, size)
   polygon(
-    arc-points(r, 0%, r, r, 0%),
-    arc-points(r, size - r, 0%, size, r),
-    arc-points(r, size, size - r, size - r, size),
-    arc-points(r, r, size, 0%, size - r)
+    arc-points(r, 0%, r, r, 0%, 10),
+    arc-points(r, size - r, 0%, size, r, 10),
+    arc-points(r, size, size - r, size - r, size, 10),
+    arc-points(r, r, size, 0%, size - r, 10)
   )
 
 .control-button

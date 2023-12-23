@@ -23,42 +23,56 @@
     grid-template-columns 1fr
     align-items center
     justify-items center
-    overflow hidden
     container-type size
+    contain paint
 
-    .slide
+    .slide-wrapper
       grid-column 1
       grid-row 1
+      display flex
+      justify-content center
       transform-origin center
-      transition opacity 1s ease-in-out, transform 1s ease-in-out, padding 1s ease-in-out
-      width calc((100% - 2 * var(--column-gap)) * 5 / 9)
+      transition opacity 1s ease-in-out, transform 1s ease-in-out, z-index 1s linear
+      width 100%
+      box-sizing border-box
       overflow-y auto
       overflow-x hidden
       max-height 100%
 
+      --slide-width: calc((100% - 2 * var(--column-gap)) * 5 / 9)
+
+      .slide
+        width var(--slide-width)
+        overflow visible
+        z-index 1
+
       &.active
         opacity 1
         transform translateX(0) scale(1.0)
-        padding 0 calc((200% + 5 * var(--column-gap)) * 1 / 9)
+        z-index 2
 
       &.previous
         opacity 0.15
-        transform translateX(calc(-50% - var(--column-gap) - 50% * 0.4)) scale(0.4)
+        transform translateX(calc(-50% + var(--slide-width) * 0.4 / 2)) scale(0.4)
+        z-index 1
         no-scrollbars()
 
       &.next
         opacity 0.5
-        transform translateX(calc(50% + var(--column-gap) + 50% * 0.4)) scale(0.4)
+        transform translateX(calc(50% - var(--slide-width) * 0.4 / 2)) scale(0.4)
+        z-index 1
         no-scrollbars()
 
       &.hidden-left
         opacity 0
-        transform translateX(calc(-50% - var(--column-gap) - 100% * 0.4)) scale(0)
+        transform translateX(-50%) scale(0)
+        z-index 0
         no-scrollbars()
 
       &.hidden-right
         opacity 0
-        transform translateX(calc(50% + var(--column-gap) + 100% * 0.4)) scale(0)
+        transform translateX(50%) scale(0)
+        z-index 0
         no-scrollbars()
 
   .arrow
@@ -87,16 +101,16 @@
     .carousel-content
       --column-gap 10px
 
+      .slide-wrapper .slide
+        width 100%
+
   +mobile-portrait()
     .carousel-content
       grid-column 1 / 4
       padding 0
 
-      .slide
+      .slide-wrapper .slide
         width calc(100% - 2 * 0.4em - 2 * var(--column-gap))
-
-        &.active
-          padding 0 calc(0.4em + var(--column-gap))
 
     .arrow
       height 0.75em

@@ -62,13 +62,14 @@ function Carousel<P extends SlideProps>({
       <Arrow className="arrow left" />
       <div class="carousel-content">
         {slideParams.map(({ displayPosition, key, ...props }) => (
-          <Slide
-            key={key}
-            className={`slide ${getSlideClassName(displayPosition, isTablet)}`}
-            align={getSlideAlign(displayPosition, isTablet)}
-            hidden={displayPosition === 0 || displayPosition === (isTablet ? 2 : 4)}
-            {...props}
-          />
+          <div class={`slide-wrapper ${getSlideClassName(displayPosition, isTablet)}`} key={key}>
+            <Slide
+              className="slide"
+              align={getSlideAlign(displayPosition, isTablet)}
+              hidden={displayPosition === 0 || displayPosition === (isTablet ? 2 : 4)}
+              {...props}
+            />
+          </div>
         ))}
       </div>
       <Arrow className="arrow right" />

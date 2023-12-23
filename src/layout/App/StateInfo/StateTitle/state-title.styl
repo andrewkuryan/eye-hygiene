@@ -1,9 +1,11 @@
 .state-title-root
+  position relative
   display flex
   justify-content center
   align-items center
   flex-wrap wrap
   column-gap 0.25em
+  background var(--background-color)
 
   &:after
     content ''
@@ -23,7 +25,7 @@
       opacity 1
       height calc(100% + 1em)
 
-  &.active
+  &.center
     span
       &.overflowed-x
         min-width 100cqw
