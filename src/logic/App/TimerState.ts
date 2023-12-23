@@ -63,7 +63,7 @@ const useTimerState = () => {
         notification
           .showNotification(
             config.periods[periodIndex].title,
-            staticService.resolve('icons', 'icon.svg'),
+            staticService.resolve('icons', 'icon-192x192.png'),
           )
           .then(() => sound.play(soundObject)),
       )
