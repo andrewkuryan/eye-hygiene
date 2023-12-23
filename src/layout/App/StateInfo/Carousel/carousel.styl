@@ -1,0 +1,121 @@
+@require "shortenings"
+@require "screens"
+
+.carousel-root
+  display grid
+  grid-template-rows 1fr
+  grid-template-columns fit-content(100%) 1fr fit-content(100%)
+  align-items stretch
+  justify-items stretch
+  width 100%
+  height 100%
+  padding 40px 40px 0 40px
+  box-sizing border-box
+
+  .carousel-content
+    --column-gap 20px
+
+    grid-row 1
+    box-sizing border-box
+    padding 0 var(--column-gap)
+    display grid
+    grid-template-rows 1fr
+    grid-template-columns 1fr
+    align-items center
+    justify-items center
+    container-type size
+    contain paint
+
+    .slide-wrapper
+      grid-column 1
+      grid-row 1
+      display flex
+      justify-content center
+      transform-origin center
+      transition opacity 1s ease-in-out, transform 1s ease-in-out, z-index 1s linear
+      width 100%
+      box-sizing border-box
+      overflow-y auto
+      overflow-x hidden
+      max-height 100%
+
+      --slide-width: calc((100% - 2 * var(--column-gap)) * 5 / 9)
+
+      .slide
+        width var(--slide-width)
+        overflow visible
+        z-index 1
+
+      &.active
+        opacity 1
+        transform translateX(0) scale(1.0)
+        z-index 2
+
+      &.previous
+        opacity 0.15
+        transform translateX(calc(-50% + var(--slide-width) * 0.4 / 2)) scale(0.4)
+        z-index 1
+        no-scrollbars()
+
+      &.next
+        opacity 0.5
+        transform translateX(calc(50% - var(--slide-width) * 0.4 / 2)) scale(0.4)
+        z-index 1
+        no-scrollbars()
+
+      &.hidden-left
+        opacity 0
+        transform translateX(-50%) scale(0)
+        z-index 0
+        no-scrollbars()
+
+      &.hidden-right
+        opacity 0
+        transform translateX(50%) scale(0)
+        z-index 0
+        no-scrollbars()
+
+  .arrow
+    grid-row 1
+    align-self center
+    overflow visible
+    width 0.4em
+    height 1.2em
+    stroke var(--secondary-color)
+
+    &.left
+      grid-column 1
+      opacity 0.5
+
+    &.right
+      grid-column 3
+      transform scale(-1)
+
+  +desktop-narrow()
+    padding 20px 20px 0 20px
+
+    .carousel-content
+      --column-gap 20px
+
+  +tablet-portrait()
+    .carousel-content
+      --column-gap 10px
+
+      .slide-wrapper .slide
+        width 100%
+
+  +mobile-portrait()
+    .carousel-content
+      grid-column 1 / 4
+      padding 0
+
+      .slide-wrapper .slide
+        width calc(100% - 2 * 0.4em - 2 * var(--column-gap))
+
+    .arrow
+      height 0.75em
+      align-self flex-end
+      margin-bottom 1.5px
+
+  +mobile-narrow-portrait()
+    padding 10px 10px 0 10px

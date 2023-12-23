@@ -1,0 +1,45 @@
+desktop-narrow()
+  @media (max-width 1100px)
+    {block}
+
+tablet-landscape()
+  @media (max-height 700px)
+    {block}
+
+tablet-portrait()
+  @media (max-width 768px)
+    {block}
+
+tablet()
+  +tablet-landscape()
+    {block}
+  +tablet-portrait()
+    {block}
+
+mobile-landscape()
+  @media (max-height 450px)
+    {block}
+
+mobile-portrait()
+  @media (max-width 580px)
+    {block}
+
+mobile()
+  +mobile-landscape()
+    {block}
+  +mobile-portrait()
+    {block}
+
+mobile-narrow-landscape()
+  @media (max-height 300px)
+    {block}
+
+mobile-narrow-portrait()
+  @media (max-width 390px)
+    {block}
+
+mobile-narrow()
+  +mobile-narrow-landscape()
+    {block}
+  +mobile-narrow-portrait()
+    {block}
