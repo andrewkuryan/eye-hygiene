@@ -13,7 +13,7 @@ import './app.styl';
 const App: FunctionComponent = () => {
   const { staticService } = useContext(ServiceContext);
 
-  const { state: timerState, onStartPeriod, onStop } = useTimerState();
+  const { state: timerState, onStartNextPeriod, onStop } = useTimerState();
 
   useEffect(() => {
     navigator.serviceWorker.register(staticService.resolve(Const.WORKERS_DIR, WORKER_NAME).url);
@@ -21,8 +21,8 @@ const App: FunctionComponent = () => {
 
   return (
     <>
-      <StatesCarousel timerState={timerState} />
-      <TimeBlock timerState={timerState} onStartPeriod={onStartPeriod} onStop={onStop} />
+      <StatesCarousel timerState={timerState} onStartNextPeriod={onStartNextPeriod} />
+      <TimeBlock timerState={timerState} onStartNextPeriod={onStartNextPeriod} onStop={onStop} />
     </>
   );
 };

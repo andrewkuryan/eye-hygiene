@@ -25,14 +25,10 @@ function useAudioProps(state: TimerState) {
   };
 }
 
-function useTimeController(
-  state: TimerState,
-  onStartPeriod: (periodIndex: number) => void,
-  onStop: () => void,
-) {
+function useTimeController(state: TimerState, onStartNextPeriod: () => void, onStop: () => void) {
   const audioProps = useAudioProps(state);
-  const seconds = useWorker(state, onStartPeriod);
-  useTray(state, seconds, onStartPeriod, onStop);
+  const seconds = useWorker(state, onStartNextPeriod);
+  useTray(state, seconds, onStartNextPeriod, onStop);
 
   return { seconds, audioProps };
 }

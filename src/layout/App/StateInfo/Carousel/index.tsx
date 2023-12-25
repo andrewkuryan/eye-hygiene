@@ -23,6 +23,8 @@ type CarouselProps<P extends SlideProps> = {
   Slide: FunctionComponent<Omit<P, 'displayPosition' | 'key'> & SlideSetup>;
   slideParams: Array<P>;
   className?: string;
+  onBackArrowClick?: () => void;
+  onNextArrowClick?: () => void;
 } & ScreenDimensions;
 
 function getSlideParam<T>(
@@ -56,10 +58,12 @@ function Carousel<P extends SlideProps>({
   slideParams,
   isTablet,
   className,
+  onBackArrowClick,
+  onNextArrowClick,
 }: RenderableProps<CarouselProps<P>>) {
   return (
     <div class={`carousel-root ${className ? className : ''}`}>
-      <Arrow className="arrow left" />
+      <Arrow className="carousel-arrow left" onClick={onBackArrowClick} />
       <div class="carousel-content">
         {slideParams.map(({ displayPosition, key, ...props }) => (
           <div class={`slide-wrapper ${getSlideClassName(displayPosition, isTablet)}`} key={key}>
@@ -72,7 +76,7 @@ function Carousel<P extends SlideProps>({
           </div>
         ))}
       </div>
-      <Arrow className="arrow right" />
+      <Arrow className="carousel-arrow right" onClick={onNextArrowClick} />
     </div>
   );
 }

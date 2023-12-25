@@ -43,6 +43,7 @@ class TrayService {
   setOnPlayHandler = (handler: MediaSessionActionHandler) => this.setHandler('play', handler);
   setOnStopHandler = (handler: MediaSessionActionHandler) => this.setHandler('stop', handler);
   setOnPauseHandler = (handler: MediaSessionActionHandler) => this.setHandler('pause', handler);
+  setOnNextHandler = (handler: MediaSessionActionHandler) => this.setHandler('nexttrack', handler);
 }
 
 export default TrayService;

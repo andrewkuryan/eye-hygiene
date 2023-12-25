@@ -7,15 +7,15 @@ import './control-button.styl';
 
 interface ControlButtonProps {
   timerState: TimerState;
-  onStartPeriod: (index: number) => void;
+  onStartNextPeriod: () => void;
   onStop: () => void;
 }
 
 const ControlButton: FunctionComponent<ControlButtonProps> = memo(
-  ({ timerState, onStartPeriod, onStop }) => {
+  ({ timerState, onStartNextPeriod, onStop }) => {
     const handleClick = () => {
       if (timerState.type === 'Stopped') {
-        onStartPeriod(0);
+        onStartNextPeriod();
       } else {
         onStop();
       }
