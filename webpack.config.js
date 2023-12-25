@@ -1,6 +1,7 @@
 const path = require('path');
 const fs = require('fs');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
 const HtmlMinimizerPlugin = require('html-minimizer-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -81,11 +82,6 @@ module.exports = (env, argv) => ({
           },
         ],
       },
-      {
-        test: /\.svg?$/,
-        issuer: /\.tsx?$/,
-        use: ['@svgr/webpack'],
-      },
     ],
   },
   plugins: [
@@ -115,9 +111,11 @@ module.exports = (env, argv) => ({
     minimizer: [
       new HtmlMinimizerPlugin({
         minify: HtmlMinimizerPlugin.swcMinify,
-        minimizerOptions: {},
       }),
-      new TerserPlugin(),
+      new TerserPlugin({
+        minify: TerserPlugin.swcMinify,
+      }),
+      new CssMinimizerPlugin(),
     ],
   },
   devServer: {
