@@ -1,33 +1,30 @@
-import { useCallback, useContext, useEffect } from 'preact/compat';
+import { useContext, useEffect } from 'preact/compat';
 
 import { ServiceContext } from '@/service';
 import { TimerState } from '@/logic/App/TimerState';
 import { ConfigContext } from '@/logic/Config';
 
-function useTrayControls(onStartPeriod: (periodIndex: number) => void, onStop: () => void) {
+function useTrayControls(onStartNextPeriod: () => void, onStop: () => void) {
   const { tray } = useContext(ServiceContext);
 
-  const onTrayPlay = useCallback(() => {
-    onStartPeriod(0);
-  }, [onStartPeriod]);
-
   useEffect(() => {
-    tray.setOnPlayHandler(onTrayPlay);
+    tray.setOnPlayHandler(onStartNextPeriod);
     tray.setOnPauseHandler(onStop);
     tray.setOnStopHandler(onStop);
-  }, [onTrayPlay, onStop]);
+    tray.setOnNextHandler(onStartNextPeriod);
+  }, [onStartNextPeriod, onStop]);
 }
 
 function useTray(
   state: TimerState,
   seconds: number,
-  onStartPeriod: (periodIndex: number) => void,
+  onStartNextPeriod: () => void,
   onStop: () => void,
 ) {
   const config = useContext(ConfigContext);
   const { staticService, tray } = useContext(ServiceContext);
 
-  useTrayControls(onStartPeriod, onStop);
+  useTrayControls(onStartNextPeriod, onStop);
 
   useEffect(() => {
     tray.setMetadata({

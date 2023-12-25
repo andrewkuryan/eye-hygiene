@@ -11,21 +11,38 @@ import './time-block.styl';
 
 interface TimeBlockProps {
   timerState: TimerState;
-  onStartPeriod: (periodIndex: number) => void;
+  onStartNextPeriod: () => void;
   onStop: () => void;
 }
 
-const TimeBlock: FunctionComponent<TimeBlockProps> = ({ timerState, onStartPeriod, onStop }) => {
-  const { seconds, audioProps } = useTimeController(timerState, onStartPeriod, onStop);
+function useTimeView(timerState: TimerState, seconds: number) {
   const periodDuration = usePeriodDuration(timerState);
+
+  return {
+    progress: periodDuration > 0 ? seconds / (periodDuration - 1) : 1,
+    restTime: periodDuration > 0 ? periodDuration - seconds : 0,
+  };
+}
+
+const TimeBlock: FunctionComponent<TimeBlockProps> = ({
+  timerState,
+  onStartNextPeriod,
+  onStop,
+}) => {
+  const { seconds, audioProps } = useTimeController(timerState, onStartNextPeriod, onStop);
+  const { progress, restTime } = useTimeView(timerState, seconds);
 
   return (
     <div class="time-block-root">
       <audio {...audioProps} />
-      <ProgressBar progress={periodDuration > 0 ? seconds / (periodDuration - 1) : 1} />
+      <ProgressBar progress={progress} />
       <div class="control-block">
-        <ControlButton timerState={timerState} onStartPeriod={onStartPeriod} onStop={onStop} />
-        <Timer restTime={periodDuration - seconds} />
+        <ControlButton
+          timerState={timerState}
+          onStartNextPeriod={onStartNextPeriod}
+          onStop={onStop}
+        />
+        <Timer restTime={restTime} />
       </div>
     </div>
   );

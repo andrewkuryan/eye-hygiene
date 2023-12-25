@@ -6,7 +6,7 @@ import { TimerState } from '@/logic/App/TimerState';
 import { ServiceContext } from '@/service';
 import { OutMessageType, postInMessage, WORKER_NAME } from '@/workers/ScheduleWorker';
 
-function useWorker(state: TimerState, onStartPeriod: (periodIndex: number) => void) {
+function useWorker(state: TimerState, onStartNextPeriod: () => void) {
   const config = useContext(ConfigContext);
   const { staticService } = useContext(ServiceContext);
 
@@ -20,27 +20,26 @@ function useWorker(state: TimerState, onStartPeriod: (periodIndex: number) => vo
   useEffect(() => {
     worker.onmessage = (e: MessageEvent<OutMessageType>) => {
       switch (e.data.type) {
-        case 'NEXT_SECOND':
-          setSeconds(e.data.seconds);
+        case 'SET_SECONDS':
+          setSeconds(e.data.value);
 
           break;
         case 'NEXT_PERIOD':
-          setSeconds(0);
-          onStartPeriod(e.data.periodIndex);
+          onStartNextPeriod();
 
           break;
       }
     };
-  }, [onStartPeriod]);
+  }, [onStartNextPeriod]);
 
   useEffect(() => {
     if (state.type === 'Stopped') {
       postInMessage(worker, { type: 'STOP' });
-      setSeconds(0);
     } else {
       postInMessage(worker, {
         type: 'START',
         periodDurations: config.periods.map(period => period.duration),
+        periodIndex: state.index,
       });
     }
   }, [state]);

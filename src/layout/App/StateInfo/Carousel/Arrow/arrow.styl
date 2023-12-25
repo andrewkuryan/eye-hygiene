@@ -1,0 +1,26 @@
+.arrow-root
+  display flex
+  justify-content center
+  align-items center
+  font-size inherit
+  padding 0
+  border none
+  background transparent
+  stroke var(--secondary-color)
+  cursor pointer
+  transition opacity 0.4s ease-in-out
+
+  svg
+    width 100%
+    height 100%
+    overflow visible
+    transition stroke 0.4s ease-in-out
+
+  &:hover
+    svg
+      stroke var(--primary-color)
+
+  &:disabled
+    pointer-events none
+    cursor auto
+    opacity 0.4

@@ -70,9 +70,12 @@ const useTimerState = () => {
       .catch(err => console.log(err));
   };
 
+  const onStartNextPeriod = () =>
+    onStartPeriod(state.type === 'Stopped' ? 0 : (state.index + 1) % config.periods.length);
+
   const onStop = () => setState({ type: 'Stopped' });
 
-  return { state, onStartPeriod, onStop };
+  return { state, onStartNextPeriod, onStop };
 };
 
 export default useTimerState;

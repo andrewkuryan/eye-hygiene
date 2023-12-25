@@ -75,17 +75,14 @@
         z-index 0
         no-scrollbars()
 
-  .arrow
+  .carousel-arrow
     grid-row 1
     align-self center
-    overflow visible
     width 0.4em
     height 1.2em
-    stroke var(--secondary-color)
 
     &.left
       grid-column 1
-      opacity 0.5
 
     &.right
       grid-column 3
@@ -112,10 +109,15 @@
       .slide-wrapper .slide
         width calc(100% - 2 * 0.4em - 2 * var(--column-gap))
 
-    .arrow
+    .carousel-arrow
       height 0.75em
       align-self flex-end
-      margin-bottom 1.5px
+
+      &.left
+        margin-bottom 1.5px
+
+      &.right
+        margin-top 1.5px
 
   +mobile-narrow-portrait()
     padding 10px 10px 0 10px

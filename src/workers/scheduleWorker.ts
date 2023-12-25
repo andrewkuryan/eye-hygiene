@@ -2,22 +2,31 @@ import { InMessageType, postOutMessage } from './ports/ScheduleWorker';
 
 let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-function handleStart(periodDurations: Array<number>) {
-  let seconds = 0;
+const state = {
+  _seconds: 0,
+  set seconds(value: number) {
+    if (this._seconds !== value) {
+      this._seconds = value;
+      postOutMessage({ type: 'SET_SECONDS', value });
+    }
+  },
+  get seconds() {
+    return this._seconds;
+  },
+};
+
+function handleStart(periodDurations: Array<number>, periodIndex: number) {
   let startTime = Date.now();
-  let periodIndex = 0;
 
   function startNextTimeout() {
-    if (seconds === periodDurations[periodIndex] - 1) {
-      seconds = 0;
-      startTime = Date.now();
-      periodIndex = (periodIndex + 1) % periodDurations.length;
-      timeoutId = setTimeout(startNextTimeout, 1000);
-      postOutMessage({ type: 'NEXT_PERIOD', periodIndex });
+    if (state.seconds === periodDurations[periodIndex] - 1) {
+      postOutMessage({ type: 'NEXT_PERIOD' });
     } else {
-      seconds = seconds + 1;
-      timeoutId = setTimeout(startNextTimeout, 1000 - (Date.now() - startTime - seconds * 1000));
-      postOutMessage({ type: 'NEXT_SECOND', seconds });
+      state.seconds = state.seconds + 1;
+      timeoutId = setTimeout(
+        startNextTimeout,
+        1000 - (Date.now() - startTime - state.seconds * 1000),
+      );
     }
   }
 
@@ -26,17 +35,14 @@ function handleStart(periodDurations: Array<number>) {
 
 function handleStop() {
   clearTimeout(timeoutId);
-  timeoutId = undefined;
+  state.seconds = 0;
 }
 
 onmessage = (e: MessageEvent<InMessageType>) => {
   switch (e.data.type) {
     case 'START':
-      if (!timeoutId) {
-        return handleStart(e.data.periodDurations);
-      } else {
-        return undefined;
-      }
+      handleStop();
+      return handleStart(e.data.periodDurations, e.data.periodIndex);
     case 'STOP':
       return handleStop();
   }
